@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <title>Reflection Workbook</title>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+        [x-cloak] { display: none !important; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFF0F5;
+            color: #4A0E2E;
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffc0cb' fill-opacity='0.1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .container {
+            background-color: #FFF;
+            box-shadow: 0 4px 6px rgba(255, 105, 180, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            font-weight: 700;
+            text-shadow: 2px 2px 0px rgba(255, 182, 193, 0.3);
+            position: relative;
+            padding-bottom: 1rem;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: #ff9a9e;
+            border-radius: 2px;
+        }
+
+        .input-box {
+            transition: all 0.3s ease;
+            background-color: #fff5f8;
+            border: 2px solid #ffc0cb;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .input-box:focus {
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.3);
+            border-color: #ff69b4;
+            background-color: #fff0f5;
+        }
+
+        .input-box::placeholder {
+            color: #f8a5c2;
+            opacity: 0.7;
+        }
+
+        .situation-card {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(145deg, #fff0f5, #ffe5ec);
+            border: 1px solid #ffc0cb;
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .situation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+        }
+
+        .situation-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(255, 105, 180, 0.15);
+        }
+
+        .situation-card h3 {
+            position: relative;
+            padding-left: 1.75rem;
+        }
+
+        .situation-card h3::before {
+            content: '🌸';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+        }
+
+        button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        button:hover::after {
+            left: 0;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body class="min-h-screen py-8" x-data="workbook()">
+    <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-xl shadow-lg">
+        <div class="text-center my-8">
+            <h1 class="text-4xl font-bold text-pink-600">Reflection Workbook</h1>
+            <p class="text-pink-400 mt-2 text-lg">Your journey to self-discovery and healing 💕</p>
+        </div>
+
+        <div x-data="{ activeTab: 'needs' }" class="mb-8">
+            <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
+                <button @click="activeTab = 'needs'" :class="{'bg-pink-500 text-white shadow-lg': activeTab === 'needs', 'bg-pink-100 text-pink-700 hover:bg-pink-200': activeTab !== 'needs'}" class="px-6 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:scale-105">
+                    ❤️ Needs
+                </button>
+                <button @click="activeTab = 'situations'" :class="{'bg-pink-500 text-white shadow-lg': activeTab === 'situations', 'bg-pink-100 text-pink-700 hover:bg-pink-200': activeTab !== 'situations'}" class="px-6 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:scale-105">
+                    🤔 Situations
+                </button>
+                <button @click="activeTab = 'plan'" :class="{'bg-pink-500 text-white shadow-lg': activeTab === 'plan', 'bg-pink-100 text-pink-700 hover:bg-pink-200': activeTab !== 'plan'}" class="px-6 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:scale-105">
+                    📝 Work Plan
+                </button>
+            </div>
+
+            <div x-show="activeTab === 'needs'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
+                <h2 class="text-2xl font-semibold mb-4 text-pink-700">Reflection on Needs</h2>
+                <p class="mb-6 text-gray-600">Make a list of your emotional, physical, and mental needs in the relationship. Then, reflect on whether your partner respects and addresses them.</p>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">My physical needs</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.physicalNeeds" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">My emotional needs</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.emotionalNeeds" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">My mental needs</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.mentalNeeds" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">How does my partner react or respond to these needs?</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.partnerReaction" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">Does my partner respect the time I try to dedicate to these needs?</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.partnerRespect" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">Does my partner support me in fulfilling them, or do they criticize and invalidate them?</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.partnerSupport" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">Do I set aside these needs myself to avoid making them angry, to prevent arguments, to please them, or to avoid rejection or to be "accepted"?</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.selfSacrifice" @input="saveAnswers()"></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-2 text-pink-600">In what situations and in what ways do I set aside my own needs?</h3>
+                        <textarea class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="3" x-model="answers.situationsOfSacrifice" @input="saveAnswers()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'situations'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-cloak>
+                <h2 class="text-2xl font-semibold mb-4 text-pink-700">Reflection on Relationship Situations</h2>
+                <p class="mb-6 text-gray-600">Identify the situations you have experienced and/or are currently experiencing in the relationship. Then, acknowledge and validate the emotions you experience in these situations.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <template x-for="(situation, index) in situations" :key="index">
+                        <div class="situation-card bg-pink-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium mb-2 text-pink-600" x-text="situation"></h3>
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">How does it manifest?</label>
+                                <textarea class="input-box w-full p-2 border border-pink-300 rounded-lg focus:outline-none text-sm" rows="2" x-model="answers.manifestations[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">How do I feel?</label>
+                                <textarea class="input-box w-full p-2 border border-pink-300 rounded-lg focus:outline-none text-sm" rows="2" x-model="answers.feelings[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'plan'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-cloak>
+                <h2 class="text-2xl font-semibold mb-4 text-pink-700">Work Plan to Leave the Toxic Relationship</h2>
+                <p class="mb-6 text-gray-600">Write down some concrete actions to start working on or changing if you are in a narcissistic relationship. Set realistic goals that you know are achievable for you, even if they seem small at first. Establish the ways and dates to begin taking these actions and commit to yourself to follow through.</p>
+
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-pink-600">I. Areas to improve:</h3>
+                        <template x-for="(_, index) in [0,1,2,3]" :key="index">
+                            <div class="mb-4">
+                                <label :for="'area-'+index" class="block text-sm font-medium text-gray-700 mb-1" x-text="`${index + 1}.-`"></label>
+                                <textarea :id="'area-'+index" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="2" x-model="answers.areasToImprove[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-pink-600">II. Current situation:</h3>
+                        <template x-for="(_, index) in [0,1,2,3]" :key="index">
+                            <div class="mb-4">
+                                <label :for="'situation-'+index" class="block text-sm font-medium text-gray-700 mb-1" x-text="`${index + 1}.-`"></label>
+                                <textarea :id="'situation-'+index" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="2" x-model="answers.currentSituation[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-pink-600">III. Goals:</h3>
+                        <template x-for="(_, index) in [0,1,2,3]" :key="index">
+                            <div class="mb-4">
+                                <label :for="'goal-'+index" class="block text-sm font-medium text-gray-700 mb-1" x-text="`${index + 1}.-`"></label>
+                                <textarea :id="'goal-'+index" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="2" x-model="answers.goals[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-pink-600">IV. Options:</h3>
+                        <template x-for="(_, index) in [0,1,2,3]" :key="index">
+                            <div class="mb-4">
+                                <label :for="'option-'+index" class="block text-sm font-medium text-gray-700 mb-1" x-text="`${index + 1}.-`"></label>
+                                <textarea :id="'option-'+index" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="2" x-model="answers.options[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-pink-600">V. Commitments:</h3>
+                        <template x-for="(_, index) in [0,1,2,3]" :key="index">
+                            <div class="mb-4">
+                                <label :for="'commitment-'+index" class="block text-sm font-medium text-gray-700 mb-1" x-text="`${index + 1}.-`"></label>
+                                <textarea :id="'commitment-'+index" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" rows="2" x-model="answers.commitments[index]" @input="saveAnswers()"></textarea>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-medium mb-2 text-pink-600">Date:</h3>
+                            <input type="date" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" x-model="answers.date" @input="saveAnswers()">
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium mb-2 text-pink-600">Name/Signature:</h3>
+                            <input type="text" class="input-box w-full p-3 border border-pink-300 rounded-lg focus:outline-none" x-model="answers.signature" @input="saveAnswers()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function workbook() {
+            return {
+                answers: JSON.parse(localStorage.getItem('workbookAnswers')) || {
+                    physicalNeeds: '',
+                    emotionalNeeds: '',
+                    mentalNeeds: '',
+                    partnerReaction: '',
+                    partnerRespect: '',
+                    partnerSupport: '',
+                    selfSacrifice: '',
+                    situationsOfSacrifice: '',
+                    manifestations: [],
+                    feelings: [],
+                    areasToImprove: [],
+                    currentSituation: [],
+                    goals: [],
+                    options: [],
+                    commitments: [],
+                    date: '',
+                    signature: ''
+                },
+                situations: [
+                    'Blame-shifting', 'Bullying', 'Discard', 'Devaluation', 'Emotional Blackmail',
+                    'Flying Monkeys', 'Gaslighting', 'Hoovering', 'Idealization', 'Love bombing',
+                    'Smear Campaigns or Defamation', 'Silent treatment', 'Scapegoat', 'Triangulation'
+                ],
+                saveAnswers() {
+                    localStorage.setItem('workbookAnswers', JSON.stringify(this.answers));
+                }
+            }
+        }
+    </script>
+</body>
+</html>

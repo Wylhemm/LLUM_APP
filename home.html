@@ -1,0 +1,499 @@
+<![CDATA[<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+  <title>Lum psyche</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            montserrat: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            'purple': {
+              100: '#F3E8FF',
+              200: '#E9D5FF',
+              500: '#A855F7',
+              600: '#9333EA',
+              800: '#6B21A8',
+            },
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="font-montserrat bg-gradient-to-br from-purple-500 via-purple-600 to-purple-800 min-h-screen text-white">
+  <header class="bg-white bg-opacity-10 backdrop-blur-md sticky top-0 z-50 transition-all duration-300" x-data="{ isScrolled: false }" x-init="window.addEventListener('scroll', () => { isScrolled = window.pageYOffset > 50 })" :class="{ 'py-2 shadow-lg': isScrolled, 'py-4': !isScrolled }">
+    <nav class="container mx-auto px-6" x-data="{ isOpen: false }">
+      <div class="flex justify-between items-center">
+        <a href="#" class="text-white font-bold text-2xl">Lum Psyche</a>
+        <div class="hidden md:flex space-x-6">
+          <a href="#home" class="nav-link text-white hover:text-purple-200 transition duration-300">Home</a>
+          <a href="#features" class="nav-link text-white hover:text-purple-200 transition duration-300">Features</a>
+          <a href="#about" class="nav-link text-white hover:text-purple-200 transition duration-300">About</a>
+          <a href="#offer" class="nav-link text-white hover:text-purple-200 transition duration-300">Offer</a>
+        </div>
+        <button @click="isOpen = !isOpen" class="md:hidden text-white focus:outline-none">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+      <div x-show="isOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="md:hidden mt-4 space-y-4">
+        <a href="#home" class="block text-white hover:text-purple-200 transition duration-300">Home</a>
+        <a href="#features" class="block text-white hover:text-purple-200 transition duration-300">Features</a>
+        <a href="#about" class="block text-white hover:text-purple-200 transition duration-300">About</a>
+        <a href="#offer" class="block text-white hover:text-purple-200 transition duration-300">Offer</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="home" class="container mx-auto px-6 py-12">
+    <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl shadow-lg overflow-hidden p-8 transform hover:scale-105 transition duration-300">
+      <div class="flex flex-col md:flex-row gap-y-8 md:gap-x-12 items-center mobile-column-switch">
+        <style>
+          @media (max-width: 767px) {
+            .column-switch {
+              flex-direction: column-reverse;
+            }
+          }
+        </style>
+        <!-- Left Column -->
+        <div class="w-full md:w-1/2 space-y-6">
+          <h1
+            class="hero-title text-4xl md:text-5xl font-extrabold text-white text-center md:text-left translate-title"
+            x-data="{ text: 'Outsmart', words: ['Outsmart', 'Overcome', 'Understand'] }"
+            x-init="setInterval(() => {
+              const currentIndex = words.indexOf(text);
+              text = words[(currentIndex + 1) % words.length];
+            }, 3000)"
+          >
+            How to <span x-text="text" class="bg-white text-purple-800 rounded-lg px-3 py-1 mx-1 inline-block transition-all duration-500 ease-in-out"></span> a Narcissist
+          </h1>
+          <p class="hero-subtitle text-lg md:text-xl text-purple-200 font-medium text-center md:text-left translate-subtitle">
+            Discover powerful strategies to protect your mental health and thrive in challenging relationships.
+          </p>
+          <div class="flex justify-center md:justify-start">
+            <a href="#offer" class="hero-button bg-white text-purple-800 font-bold py-3 px-6 rounded-full hover:bg-purple-100 transition duration-300 ease-in-out transform hover:scale-105 shadow-lg">
+              Get Your Free Guide
+            </a>
+          </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="w-full md:w-1/2 flex justify-center">
+          <div class="relative w-[80%] md:w-full aspect-square" x-data="{ rotate: 0 }" x-init="setInterval(() => rotate = (rotate + 1) % 360, 50)">
+            <img
+              src="https://www.iconarchive.com/download/i136048/microsoft/fluentui-emoji-3d/Brain-3d.1024.png"
+              alt="Mental Health Illustration"
+              class="w-full h-full object-contain rounded-lg transition-transform duration-1000 ease-in-out"
+              :style="`transform: rotate(${rotate}deg);`"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+        <div class="text-4xl mb-4">🧠</div>
+        <h3 class="text-xl font-bold text-white mb-3 translate-feature-title">Recognize Patterns</h3>
+        <p class="text-purple-200 translate-feature-description">Learn to identify narcissistic behaviors and protect yourself from manipulation.</p>
+      </div>
+      <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+        <div class="text-4xl mb-4">🛡️</div>
+        <h3 class="text-xl font-bold text-white mb-3 translate-feature-title">Set Boundaries</h3>
+        <p class="text-purple-200 translate-feature-description">Develop effective strategies to establish and maintain healthy boundaries.</p>
+      </div>
+      <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+        <div class="text-4xl mb-4">🌱</div>
+        <h3 class="text-xl font-bold text-white mb-3 translate-feature-title">Heal and Grow</h3>
+        <p class="text-purple-200 translate-feature-description">Discover techniques for self-care and personal growth to reclaim your mental well-being.</p>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="mt-16">
+      <h2 class="text-3xl font-bold text-white text-center mb-8 translate-testimonials-title">What Our Clients Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <p class="text-purple-100 mb-4 translate-testimonial-text">"This guide has been a game-changer for me. I finally feel equipped to handle the narcissist in my life."</p>
+          <p class="text-white font-bold translate-testimonial-author">- Sarah M.</p>
+        </div>
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <p class="text-purple-100 mb-4 translate-testimonial-text">"I've tried many resources, but this one truly stands out. The strategies are practical and effective."</p>
+          <p class="text-white font-bold translate-testimonial-author">- John D.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="mt-16">
+      <h2 class="about-title text-3xl font-bold text-white text-center mb-8 translate-about-title">About Us</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Psychologist 1 -->
+        <div class="psychologist bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <img src="https://via.placeholder.com/150" alt="Dr. Emily Johnson" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-purple-200">
+          <h3 class="psychologist-name text-2xl font-bold text-white mb-2 translate-psychologist-name">Dr. Emily Johnson</h3>
+          <p class="psychologist-title text-purple-200 mb-4 translate-psychologist-title">Clinical Psychologist, Ph.D.</p>
+          <p class="psychologist-description text-purple-100 translate-psychologist-description">Dr. Johnson specializes in cognitive behavioral therapy and has extensive experience in treating individuals affected by narcissistic relationships.</p>
+        </div>
+        
+        <!-- Psychologist 2 -->
+        <div class="psychologist bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <img src="https://via.placeholder.com/150" alt="Dr. Michael Lee" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-purple-200">
+          <h3 class="psychologist-name text-2xl font-bold text-white mb-2 translate-psychologist-name">Dr. Michael Lee</h3>
+          <p class="psychologist-title text-purple-200 mb-4 translate-psychologist-title">Counseling Psychologist, Psy.D.</p>
+          <p class="psychologist-description text-purple-100 translate-psychologist-description">Dr. Lee focuses on empowering individuals through mindfulness-based approaches and has researched extensively on narcissistic personality disorder.</p>
+        </div>
+      </div>
+      <div class="mt-8 text-center">
+        <p class="about-team-description text-lg text-purple-100">Together, we bring over 30 years of combined experience in helping individuals navigate complex relationships and reclaim their mental well-being.</p>
+      </div>
+    </section>
+
+    <!-- Feature Cards Section -->
+    <section id="feature-cards" class="mt-16">
+      <h2 class="text-3xl font-bold text-white text-center mb-8">Why Choose Our Guide?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <div class="flex justify-center mb-4">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Expert Insights</h3>
+          <p class="text-purple-200">Gain valuable knowledge from mental health professionals and relationship experts.</p>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <div class="flex justify-center mb-4">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Practical Strategies</h3>
+          <p class="text-purple-200">Learn actionable techniques you can apply immediately to improve your situation.</p>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+          <div class="flex justify-center mb-4">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Self-Care Focus</h3>
+          <p class="text-purple-200">Prioritize your mental health with our comprehensive self-care techniques and exercises.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offer Card Section -->
+    <section id="offer" class="mt-16">
+      <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-8 shadow-lg transform hover:scale-105 transition duration-300">
+        <h2 class="offer-title text-3xl font-bold text-white text-center mb-6 translate-offer-title">Comprehensive Narcissist Management Package</h2>
+        <div class="space-y-4 flex flex-col items-center">
+          <div class="grid grid-cols-1 gap-4 w-full">
+            <div class="flex flex-col items-center text-center space-y-4">
+              <h3 class="offer-subtitle text-2xl font-semibold text-white translate-offer-subtitle">What You'll Get:</h3>
+              <ul class="space-y-3 text-purple-200 w-full max-w-2xl flex flex-col items-center">
+                <li class="offer-item flex items-center justify-center w-full translate-offer-item">
+                  <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Comprehensive eBook Guide
+                </li>
+                <li class="offer-item flex items-center justify-center w-full translate-offer-item">
+                  <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Professional Narrated Audiobook
+                </li>
+                <li class="offer-item flex items-center justify-center w-full translate-offer-item">
+                  <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  AI-Powered Narcissist Management Advisor
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 text-center">
+          <a href="#home" class="offer-button inline-block bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-full text-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 shadow-lg translate-offer-button">
+            Get the Complete Package - $97
+          </a>
+          <p class="offer-guarantee mt-3 text-purple-200">30-day money-back guarantee. Start your journey to emotional freedom today!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div x-data="languageManager()" x-init="init()">
+    <button
+      @click="toggleLanguage()"
+      class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-full p-3 shadow-lg hover:bg-opacity-30 transition duration-300 z-50"
+      :title="language === 'en' ? 'Cambiar a Español' : 'Switch to English'"
+    >
+      <img
+        x-show="language === 'en'"
+        src="https://flagcdn.com/us.svg"
+        alt="US Flag"
+        class="w-6 h-4"
+      >
+      <img
+        x-show="language === 'es'"
+        src="https://flagcdn.com/es.svg"
+        alt="Spanish Flag"
+        class="w-6 h-4"
+      >
+    </button>
+  </div>
+
+  <script>
+    function languageManager() {
+      return {
+        language: 'en',
+        translations: {
+          en: {
+            navLinks: {
+              home: 'Home',
+              features: 'Features',
+              about: 'About',
+              offer: 'Offer'
+            },
+            heroTitle: 'How to <span class="bg-white text-purple-800 rounded-lg px-3 py-1 mx-1 inline-block transition-all duration-500 ease-in-out">Outsmart</span> a Narcissist',
+            heroSubtitle: 'Discover powerful strategies to protect your mental health and thrive in challenging relationships.',
+            heroButton: 'Get Your Free Guide',
+            features: [
+              { title: 'Recognize Patterns', description: 'Learn to identify narcissistic behaviors and protect yourself from manipulation.' },
+              { title: 'Set Boundaries', description: 'Develop effective strategies to establish and maintain healthy boundaries.' },
+              { title: 'Heal and Grow', description: 'Discover techniques for self-care and personal growth to reclaim your mental well-being.' }
+            ],
+            featureCards: [
+              { title: 'Expert Insights', description: 'Gain valuable knowledge from mental health professionals and relationship experts.' },
+              { title: 'Practical Strategies', description: 'Learn actionable techniques you can apply immediately to improve your situation.' },
+              { title: 'Self-Care Focus', description: 'Prioritize your mental health with our comprehensive self-care techniques and exercises.' }
+            ],
+            aboutTitle: 'About Us',
+            psychologists: [
+              {
+                name: 'Dr. Emily Johnson',
+                title: 'Clinical Psychologist, Ph.D.',
+                description: 'Dr. Johnson specializes in cognitive behavioral therapy and has extensive experience in treating individuals affected by narcissistic relationships.'
+              },
+              {
+                name: 'Dr. Michael Lee',
+                title: 'Counseling Psychologist, Psy.D.',
+                description: 'Dr. Lee focuses on empowering individuals through mindfulness-based approaches and has researched extensively on narcissistic personality disorder.'
+              }
+            ],
+            aboutTeamDescription: 'Together, we bring over 30 years of combined experience in helping individuals navigate complex relationships and reclaim their mental well-being.',
+            offerTitle: 'Comprehensive Narcissist Management Package',
+            offerSubtitle: 'What You\'ll Get:',
+            offerItems: [
+              'Comprehensive eBook Guide',
+              'Professional Narrated Audiobook',
+              'AI-Powered Narcissist Management Advisor'
+            ],
+            offerButton: 'Get the Complete Package - $97',
+            offerGuarantee: '30-day money-back guarantee. Start your journey to emotional freedom today!',
+            footerCopyright: ' 2023 MentalWellness. All rights reserved.',
+            testimonialsTitle: 'What Our Clients Say',
+            testimonials: [
+              {
+                text: '"This guide has been a game-changer for me. I finally feel equipped to handle the narcissist in my life."',
+                author: '- Sarah M.'
+              },
+              {
+                text: '"I\'ve tried many resources, but this one truly stands out. The strategies are practical and effective."',
+                author: '- John D.'
+              }
+            ]
+          },
+          es: {
+            navLinks: {
+              home: 'Inicio',
+              features: 'Características',
+              about: 'Sobre Nosotros',
+              offer: 'Oferta'
+            },
+            heroTitle: 'Cómo <span class="bg-white text-purple-800 rounded-lg px-3 py-1 mx-1 inline-block transition-all duration-500 ease-in-out">Superar</span> a un Narcisista',
+            heroSubtitle: 'Descubre estrategias poderosas para proteger tu salud mental y prosperar en relaciones desafiantes.',
+            heroButton: 'Obtén tu Guía Gratis',
+            features: [
+              { title: 'Reconocer Patrones', description: 'Aprende a identificar comportamientos narcisistas y protégete de la manipulación.' },
+              { title: 'Establecer Límites', description: 'Desarrolla estrategias efectivas para establecer y mantener límites saludables.' },
+              { title: 'Sanar y Crecer', description: 'Descubre técnicas de autocuidado y crecimiento personal para recuperar tu bienestar mental.' }
+            ],
+            featureCards: [
+              { title: 'Conocimiento Experto', description: 'Obtén conocimientos valiosos de profesionales de la salud mental y expertos en relaciones.' },
+              { title: 'Estrategias Prácticas', description: 'Aprende técnicas accionables que puedes aplicar inmediatamente para mejorar tu situación.' },
+              { title: 'Enfoque en el Autocuidado', description: 'Prioriza tu salud mental con nuestras técnicas y ejercicios integrales de autocuidado.' }
+            ],
+            aboutTitle: 'Sobre Nosotros',
+            psychologists: [
+              {
+                name: 'Dra. Emily Johnson',
+                title: 'Psicóloga Clínica, Ph.D.',
+                description: 'La Dra. Johnson se especializa en terapia cognitivo-conductual y tiene amplia experiencia tratando a individuos afectados por relaciones narcisistas.'
+              },
+              {
+                name: 'Dr. Michael Lee',
+                title: 'Psicólogo Clínico, Psy.D.',
+                description: 'El Dr. Lee se enfoca en empoderar a individuos a través de enfoques basados en la atención plena y ha investigado extensamente sobre el trastorno de personalidad narcisista.'
+              }
+            ],
+            aboutTeamDescription: 'Juntos, aportamos más de 30 años de experiencia combinada ayudando a las personas a navegar relaciones complejas y recuperar su bienestar mental.',
+            offerTitle: 'Paquete Integral de Manejo de Narcisismo',
+            offerSubtitle: 'Lo que Obtendrás:',
+            offerItems: [
+              'Guía Completa de eBook',
+              'Audiolibro Profesional Narrado',
+              'Asesor de Manejo de Narcisismo con IA'
+            ],
+            offerButton: 'Obtén el Paquete Completo - $97',
+            offerGuarantee: 'Garantía de devolución de 30 días. ¡Comienza tu viaje hacia la libertad emocional hoy!',
+            footerCopyright: ' 2023 MentalWellness. Todos los derechos reservados.',
+            testimonialsTitle: 'Lo que dicen nuestros clientes',
+            testimonials: [
+              {
+                text: '"Esta guía ha sido un cambio radical para mí. Finalmente me siento preparada para manejar al narcisista en mi vida."',
+                author: '- Sarah M.'
+              },
+              {
+                text: '"He probado muchos recursos, pero este realmente sobresale. Las estrategias son prácticas y efectivas."',
+                author: '- John D.'
+              }
+            ]
+          }
+        },
+        init() {
+          this.updateContent();
+        },
+        toggleLanguage() {
+          this.language = this.language === 'en' ? 'es' : 'en';
+          this.updateContent();
+        },
+        updateContent() {
+          const content = this.translations[this.language];
+          
+          // Update navigation
+          const navLinks = document.querySelectorAll('.nav-link');
+          if (navLinks.length) {
+            const linkKeys = ['home', 'features', 'about', 'offer'];
+            navLinks.forEach((link, index) => {
+              link.textContent = content.navLinks[linkKeys[index]];
+            });
+          }
+
+          // Update hero section
+          const heroTitle = document.querySelector('.hero-title');
+          const heroSubtitle = document.querySelector('.hero-subtitle');
+          const heroButton = document.querySelector('.hero-button');
+          if (heroTitle) heroTitle.innerHTML = content.heroTitle;
+          if (heroSubtitle) heroSubtitle.textContent = content.heroSubtitle;
+          if (heroButton) heroButton.textContent = content.heroButton;
+          
+          // Update features
+          const featuresContainer = document.querySelector('#features');
+          const featureCardsContainer = document.querySelector('#feature-cards');
+          if (featuresContainer) {
+            featuresContainer.innerHTML = content.features.map((feature, index) => `
+              <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transform hover:scale-105 transition duration-300">
+                <h3 class="text-xl font-bold text-white mb-3">${feature.title}</h3>
+                <p class="text-purple-200">${feature.description}</p>
+              </div>
+            `).join('');
+          }
+          if (featureCardsContainer) {
+            featureCardsContainer.innerHTML = content.featureCards.map((card, index) => `
+              <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-20">
+                <div class="flex justify-center mb-4">
+                  <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">${card.title}</h3>
+                <p class="text-purple-200">${card.description}</p>
+              </div>
+            `).join('');
+          }
+
+          // Update About section
+          const aboutTitle = document.querySelector('.about-title');
+          const psychologists = document.querySelectorAll('.psychologist');
+          const aboutTeamDescription = document.querySelector('.about-team-description');
+          if (aboutTitle) aboutTitle.textContent = content.aboutTitle;
+          if (psychologists.length) {
+            psychologists.forEach((el, index) => {
+              const psychologist = content.psychologists[index];
+              const name = el.querySelector('.psychologist-name');
+              const title = el.querySelector('.psychologist-title');
+              const description = el.querySelector('.psychologist-description');
+              if (name) name.textContent = psychologist.name;
+              if (title) title.textContent = psychologist.title;
+              if (description) description.textContent = psychologist.description;
+            });
+          }
+          if (aboutTeamDescription) aboutTeamDescription.textContent = content.aboutTeamDescription;
+
+          // Update Offer section
+          const offerTitle = document.querySelector('.offer-title');
+          const offerSubtitle = document.querySelector('.offer-subtitle');
+          const offerItems = document.querySelectorAll('.offer-item');
+          const offerButton = document.querySelector('.offer-button');
+          const offerGuarantee = document.querySelector('.offer-guarantee');
+          if (offerTitle) offerTitle.textContent = content.offerTitle;
+          if (offerSubtitle) offerSubtitle.textContent = content.offerSubtitle;
+          if (offerItems.length) {
+            offerItems.forEach((el, index) => {
+              el.textContent = content.offerItems[index];
+            });
+          }
+          if (offerButton) offerButton.textContent = content.offerButton;
+          if (offerGuarantee) offerGuarantee.textContent = content.offerGuarantee;
+
+          // Update testimonials
+          const testimonialsTitle = document.querySelector('.translate-testimonials-title');
+          const testimonials = document.querySelectorAll('.translate-testimonial-text');
+          const testimonialAuthors = document.querySelectorAll('.translate-testimonial-author');
+          
+          if (testimonialsTitle) testimonialsTitle.textContent = content.testimonialsTitle;
+          if (testimonials.length) {
+            testimonials.forEach((el, index) => {
+              el.textContent = content.testimonials[index].text;
+            });
+          }
+          if (testimonialAuthors.length) {
+            testimonialAuthors.forEach((el, index) => {
+              el.textContent = content.testimonials[index].author;
+            });
+          }
+
+          // Update footer
+          const footerCopyright = document.querySelector('.footer-copyright');
+          if (footerCopyright) footerCopyright.textContent = content.footerCopyright;
+        }
+      }
+    }
+  </script>
+  </div>
+  <footer class="bg-white bg-opacity-10 backdrop-blur-md mt-16 py-6 relative">
+    <div class="container mx-auto px-6 text-center text-purple-200">
+      <p>&copy; 2023 MentalWellness. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>]]>

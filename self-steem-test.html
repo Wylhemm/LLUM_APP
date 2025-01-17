@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <title>Self-Esteem Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF69B4;
+            --secondary-color: #FFC0CB;
+            --text-color: #333;
+            --background-color: #FFF0F5;
+            --shadow-color: rgba(255, 105, 180, 0.1);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .instructions {
+            background-color: var(--background-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .question {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+        .question:hover {
+            transform: translateY(-5px);
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .options label {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: var(--background-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        .options label:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        input[type="radio"]:checked + label {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        button {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            font-size: 1em;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        button:hover {
+            background-color: #FF1493;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+        #result {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            background-color: var(--background-color);
+            border-radius: 10px;
+            display: none;
+        }
+        .evaluation-range {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .range-item {
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin: 5px;
+            box-shadow: 0 3px 10px var(--shadow-color);
+        }
+        .range-item strong {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Self-Esteem Assessment</h1>
+        <div class="instructions">
+            <p><strong>Lucy Reidl Self-Esteem Scale</strong></p>
+            <p>Read each statement carefully and select the option that best represents your feelings:</p>
+            <p><strong>Agree (A)</strong> | <strong>Don't know (N)</strong> | <strong>Disagree (D)</strong></p>
+        </div>
+        <form id="selfEsteemForm">
+            <div id="questions"></div>
+            <button type="button" onclick="calculateScore()">Submit Assessment</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            "I am a person with many qualities.",
+            "Generally, if I have something to say, I say it.",
+            "I often feel ashamed of myself.",
+            "I almost always feel confident about what I think.",
+            "I don't really like myself.",
+            "I rarely feel guilty about things I've done",
+            "I believe people have a good opinion of me.",
+            "I am quite happy.",
+            "I feel proud of what I do.",
+            "Few people pay attention to me.",
+            "There are many things I would change about myself if I could.",
+            "I have a hard time speaking in front of people.",
+            "I am almost never sad.",
+            "It's very hard to be myself.",
+            "It's easy for people to like me.",
+            "If we could go back and live life again, I would be different.",
+            "In general, people listen to me when I give them advice.",
+            "There always has to be someone to tell me what to do.",
+            "I often wish I were someone else.",
+            "I feel pretty confident about myself."
+        ];
+
+        const scoring = [
+            [3, 2, 1], [3, 2, 1], [1, 2, 3], [3, 2, 1], [1, 2, 3],
+            [3, 2, 1], [3, 2, 1], [3, 2, 1], [3, 2, 1], [1, 2, 3],
+            [1, 2, 3], [1, 2, 3], [3, 2, 1], [1, 2, 3], [3, 2, 1],
+            [1, 2, 3], [3, 2, 1], [1, 2, 3], [1, 2, 3], [3, 2, 1]
+        ];
+
+        function createQuestions() {
+            const questionsDiv = document.getElementById('questions');
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <p><strong>${index + 1}.</strong> ${question}</p>
+                    <div class="options">
+                        <input type="radio" id="q${index}A" name="q${index}" value="A" required>
+                        <label for="q${index}A">Agree</label>
+                        <input type="radio" id="q${index}N" name="q${index}" value="N" required>
+                        <label for="q${index}N">Don't know</label>
+                        <input type="radio" id="q${index}D" name="q${index}" value="D" required>
+                        <label for="q${index}D">Disagree</label>
+                    </div>
+                `;
+                questionsDiv.appendChild(questionDiv);
+            });
+        }
+
+        function calculateScore() {
+            let score = 0;
+            for (let i = 0; i < questions.length; i++) {
+                const selectedValue = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedValue) {
+                    const answerIndex = ['A', 'N', 'D'].indexOf(selectedValue.value);
+                    score += scoring[i][answerIndex];
+                } else {
+                    alert('Please answer all questions before submitting the assessment.');
+                    return;
+                }
+            }
+            displayResult(score);
+        }
+
+        function displayResult(score) {
+            const resultDiv = document.getElementById('result');
+            let evaluation;
+            if (score >= 55) evaluation = 'Very Good';
+            else if (score >= 46) evaluation = 'Good';
+            else if (score >= 37) evaluation = 'Fair';
+            else if (score >= 28) evaluation = 'Insufficient';
+            else evaluation = 'Poor';
+
+            resultDiv.innerHTML = `
+                <h2>Your Self-Esteem Score: ${score}</h2>
+                <p>Evaluation: <strong>${evaluation}</strong></p>
+                <div class="evaluation-range">
+                    <div class="range-item">
+                        <strong>Very Good</strong><br>55-60
+                    </div>
+                    <div class="range-item">
+                        <strong>Good</strong><br>46-54
+                    </div>
+                    <div class="range-item">
+                        <strong>Fair</strong><br>37-45
+                    </div>
+                    <div class="range-item">
+                        <strong>Insufficient</strong><br>28-36
+                    </div>
+                    <div class="range-item">
+                        <strong>Poor</strong><br>20-27
+                    </div>
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        createQuestions();
+    </script>
+</body>
+</html>
+

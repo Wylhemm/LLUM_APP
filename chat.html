@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <title>Lum Bot</title>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FFE5EC; /* Light pink background */
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #FF577F; /* Kawaii pink color */
+            border-radius: 10px;
+            border: 3px solid #FFE5EC; /* Creates padding effect */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF3364; /* Darker pink on hover */
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #FF577F #FFE5EC;
+        }
+
+        /* For the chat messages container */
+        .chat-messages {
+            scrollbar-gutter: stable;
+            padding-right: 12px; /* Prevents content shift when scrollbar appears */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'nunito': ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        'kawaii-pink': {
+                            100: '#FFE5EC',
+                            200: '#FFC2D1',
+                            300: '#FF9FB5',
+                            400: '#FF7B9A',
+                            500: '#FF577F',
+                            600: '#FF3364',
+                        },
+                    },
+                    keyframes: {
+                        'pop-in': {
+                            '0%': { transform: 'scale(0)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        'bounce-in': {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '60%': { transform: 'translateY(-5px)' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        'typing': {
+                            '0%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                            '100%': { transform: 'translateY(0px)' }
+                        }
+                    },
+                    animation: {
+                        'pop-in': 'pop-in 0.3s ease-out forwards',
+                        'bounce-in': 'bounce-in 0.5s ease-out forwards',
+                        'typing': 'typing 0.6s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('credits', {
+                remaining: parseInt(localStorage.getItem('remaining_credits') || '0'),
+                update(newCredits) {
+                    this.remaining = newCredits;
+                    localStorage.setItem('remaining_credits', newCredits.toString());
+                }
+            });
+
+            async function fetchUserCredits() {
+                try {
+                    const response = await fetch('/api/user/credits', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch credits');
+                    }
+                    const data = await response.json();
+                    Alpine.store('credits').update(data.credits);
+                } catch (error) {
+                    console.error('Error fetching credits:', error);
+                }
+            }
+
+            fetchUserCredits();
+
+            Alpine.store('chat', {
+                messages: JSON.parse(localStorage.getItem('chat_messages') || '[]'),
+                credits: null,
+                parseMarkdown(text) {
+                    if (!this.markdownCache) this.markdownCache = {};
+                    if (this.markdownCache[text]) return this.markdownCache[text];
+                    let parsed = text
+                        .replace(/###\s(.*?)(\n|$)/g, '<h3 class="text-lg font-bold my-2 text-kawaii-pink-600">$1</h3>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-kawaii-pink-500">$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em class="text-kawaii-pink-400">$1</em>')
+                        .replace(/``````/gs, '<pre class="bg-kawaii-pink-100 p-3 rounded-lg my-2"><code>$1</code></pre>')
+                        .replace(/^\s*\-\s(.*)$/gm, '<li class="ml-4 text-kawaii-pink-500">$1</li>')
+                        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-kawaii-pink-500 underline">$1</a>');
+                    this.markdownCache[text] = parsed;
+                    return parsed;
+                },
+                addMessage(content, isUser) {
+                    this.messages.push({
+                        content,
+                        isUser,
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('chat_messages', JSON.stringify(this.messages));
+                },
+                updateCredits(credits) {
+                    this.credits = credits;
+                }
+            });
+        });
+
+        function cleanupChat() {
+            const store = Alpine.store('chat');
+            // Clear markdown cache
+            if (store.markdownCache) {
+                store.markdownCache = {};
+            }
+            // Clear messages
+            store.messages = [];
+            // Clear localStorage
+            localStorage.removeItem('chat_messages');
+            // Reset credits display
+            store.credits = null;
+        }
+    </script>
+</head>
+<body class="bg-kawaii-pink-100 h-screen font-nunito">
+    <div x-data="{
+        message: '',
+        async sendMessage() {
+            if (!this.message.trim()) return;
+            const userMessage = this.message;
+            Alpine.store('chat').addMessage(userMessage, true);
+            this.message = '';
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ message: userMessage })
+                });
+                const data = await response.json();
+                Alpine.store('chat').addMessage(data.response, false);
+                Alpine.store('credits').update(data.remaining_credits);
+                $dispatch('message-received');
+            } catch (error) {
+                Alpine.store('chat').addMessage('Error: Could not send message', false);
+            }
+        }
+    }" class="container mx-auto max-w-3xl h-screen flex flex-col p-2 sm:p-4">
+        <!-- Credits Display -->
+        <div class="fixed top-4 right-4 bg-white rounded-full shadow-lg px-4 py-2 flex items-center gap-2 border-2 border-kawaii-pink-200 z-50">
+            <span class="text-kawaii-pink-500 font-semibold">✨</span>
+            <span class="text-kawaii-pink-600" x-text="$store.credits.remaining"></span>
+            <span class="text-kawaii-pink-400 text-sm">credits</span>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="flex-1 overflow-y-auto mb-4 space-y-4 p-3 sm:p-6 bg-white rounded-3xl shadow-lg chat-messages">
+            <template x-for="msg in $store.chat.messages" :key="msg.timestamp">
+                <div :class="msg.isUser ? 'flex justify-end' : 'flex justify-start items-end gap-2'"
+                     class="animate-bounce-in">
+                    <template x-if="!msg.isUser">
+                        <img src="https://cdn.midjourney.com/fc60653c-1266-4a08-8021-15e1d33c4353/0_1.png" 
+                             alt="Kawaii Assistant" 
+                             class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-kawaii-pink-300"
+                        />
+                    </template>
+                    <div :class="`max-w-[85%] sm:max-w-[70%] rounded-3xl px-4 py-2 sm:px-5 sm:py-3 ${msg.isUser ? 'bg-kawaii-pink-400 text-white' : 'bg-kawaii-pink-100 text-kawaii-pink-600'}`"
+                         class="shadow-md">
+                        <p x-html="$store.chat.parseMarkdown(msg.content)" class="break-words prose prose-pink max-w-none text-sm sm:text-base"></p>
+                        <span class="text-xs opacity-70 block mt-1" x-text="new Date(msg.timestamp).toLocaleTimeString()"></span>
+                    </div>
+                    <template x-if="msg.isUser">
+                        <img src="https://cdn.midjourney.com/6d7e1722-e9e0-4b83-908e-353cc04a7ed8/0_0.png" 
+                             alt="User" 
+                             class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-kawaii-pink-300"
+                        />
+                    </template>
+                </div>
+            </template>
+            <!-- Loading Animation -->
+            <div x-data="{ isLoading: false }" 
+                 x-show="isLoading"
+                 @message-sent.window="isLoading = true"
+                 @message-received.window="isLoading = false"
+                 class="flex items-end gap-2 animate-bounce-in">
+                <img src="https://cdn.midjourney.com/fc60653c-1266-4a08-8021-15e1d33c4353/0_1.png" 
+                     alt="Kawaii Assistant" 
+                     class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-kawaii-pink-300"
+                />
+                <div class="bg-kawaii-pink-100 rounded-3xl px-4 py-2 shadow-md flex gap-1">
+                    <div class="w-2 h-2 bg-kawaii-pink-400 rounded-full animate-typing"></div>
+                    <div class="w-2 h-2 bg-kawaii-pink-400 rounded-full animate-typing" style="animation-delay: 0.2s"></div>
+                    <div class="w-2 h-2 bg-kawaii-pink-400 rounded-full animate-typing" style="animation-delay: 0.4s"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="bg-white rounded-3xl shadow-lg p-3 sm:p-6">
+            <div class="flex gap-2 sm:gap-3 items-center">
+                <input 
+                    type="text" 
+                    x-model="message" 
+                    @keyup.enter="sendMessage(); $dispatch('message-sent')"
+                    placeholder="Type your kawaii message..." 
+                    class="flex-1 px-4 py-3 sm:px-5 sm:py-4 border-2 border-kawaii-pink-200 rounded-full focus:outline-none focus:ring-2 focus:ring-kawaii-pink-400 bg-kawaii-pink-100 text-kawaii-pink-600 placeholder-kawaii-pink-300 text-sm sm:text-base"
+                />
+                <button 
+                    @click="sendMessage(); $dispatch('message-sent')"
+                    class="px-4 py-3 sm:px-6 sm:py-4 bg-kawaii-pink-400 text-white rounded-full hover:bg-kawaii-pink-500 focus:outline-none focus:ring-2 focus:ring-kawaii-pink-400 transition-colors duration-200 shadow-md text-sm sm:text-base"
+                >
+                    Send
+                </button>
+            </div>
+            
+            <!-- Credits Counter -->
+            <div class="mt-4 text-sm text-kawaii-pink-500 text-center" x-show="$store.chat.credits !== null">
+                <span class="font-semibold">✨ Credits remaining: </span>
+                <span x-text="$store.chat.credits" class="font-bold"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
